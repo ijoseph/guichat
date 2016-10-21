@@ -1,0 +1,93 @@
+Meeting start: 8:22 PM, BC, May 5th
+
+Agenda: cover Jesse's concerns, code design, start coding
+
+Concerns
+---
+
+Preliminary aside:
+Figure out how to deal with updating list of people in a current chat room. 
+
+Solution: Have sever-originated messages that let all relevant users know when when a user signs in or
+out of a chat to let the people in it stay updated. New types added: "joined room", "left room", 
+possibly "logon", "logoff" for buddy list implementation.
+
+Aside: 
+Figure out how to deal with multiple ACK's arriving to a single user out of order.
+
+Solution: Add fields for destination username and type to each ACK.  
+
+Aside: Should message ACKs be sent from clients or from the server?
+
+Solution: Sent from the server, more straightforward... server should know state of clients based on
+sockets
+
+
+
+Code design
+---
+
+Model-View-Controller
+
+Client model:
+
+Controller:
+Part of the client controller deals with sending messages; when a user clicks on a "send" button, 
+a message is sent and the controller is put in a state where it waits for an ACK. At the same time,
+the model is updated to reflect that an unACKed message has been sent (e.g., the "send" button is 
+disabled). If an ACK is received within a timeout period, then the controller receives the ACK,
+changes the model accordingly (by changing status flag associated with the last message in the 
+Conversation object to indicate that it has been sent. This updates the view accordingly. If the ACK 
+is not received, the controller updates the model by changing the status flag to an error status, 
+which the view updates accordingly by displaying the message that coudln't be sent and in an error
+message.
+
+
+
+Model:
+The client model has a collection of Conversations. Each conversation has a collection of messages,
+a state variable that can be either "waiting for message ACK", "message timeout", 
+"successful transmission", or "user offline." In addition, the client model has a state that 
+represents login status; as shown on the state diagram, this can be either "idle", "socket open",
+or "logged in." A conversation can be either a "group chat" or a "single person" communication. 
+           
+ 
+View:
+Consists of listeners that check to see if buttons have been pressed, and updates the model 
+accordingly. For example, upon pressing the "send" button in a conversation, notifies the 
+controller, which changes the state of the Conversation in the model to "waiting for message ACK." 
+The view is called by the model to update for every change that happens in the model (it reacts to
+a message ACK being received by making the "send" button available, for instance.    
+
+
+Server model: 
+
+
+
+
+ 
+
+Testing Design:
+
+Problem: Testing without sockets
+
+Solution: Base the testing on the states of the client or server; manipulate the client or 
+server to be in the same states as it would be otherwise. Jesse will attempt to create 
+a simulated channel with simulated sockets to test the feasibility of this. 
+ 
+
+ Meeting adjourned. 11:40 PM. Meeting duration: 3 hours, 20 minutes. 
+ 
+ Except that Jesse whatever.
+ 
+ Next meeting: Time and place 
+ 
+ Next meeting: Continue code design and testing strategy, continue writing preliminary code.
+ 
+ Responsibilities: 
+  Kling: nothing
+  Isaac: mess around with GUI
+  Jesse: test sockets. 
+  
+  
+  

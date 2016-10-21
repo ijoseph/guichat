@@ -1,0 +1,19 @@
+## Abstract Design 15/15
+
+## Protocol 10/10
+
+## Usability Design 5/5
+
+## Code Design 10/10
+
+## Testing Strategy 10/10
+
+## Initial Demo 5/5
+
+## Implementation 30/30
+
+## Testing Execution 5/5
+
+## Reflection 10/10
+
+total: 100/100

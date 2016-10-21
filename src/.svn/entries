@@ -1,0 +1,43 @@
+9
+
+dir
+163
+svn+ssh://athena.dialup.mit.edu/mit/6.005/svn/groups/guichat/group03/guichat/src
+svn+ssh://athena.dialup.mit.edu/mit/6.005/svn/groups/guichat/group03
+
+
+
+2009-05-13T04:27:17.117830Z
+161
+Jesse
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+b243cc63-c85f-425c-a479-20f107b55882
+
+client
+dir
+
+comm
+dir
+
+main
+dir
+
+server
+dir
+
+tests
+dir
+

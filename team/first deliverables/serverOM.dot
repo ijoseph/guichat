@@ -1,0 +1,27 @@
+digraph {
+
+node[shape=box]
+
+Server[shape=oval]
+
+Server -> "User Map" [label=connected headlabel="!" taillabel="?" labeldistance=1.2]
+"User Map" -> "User Entry" [label=entries taillabel="?" labeldistance=1.2]
+"User Entry" -> "User Info" [label=val headlabel="!" labeldistance=1.2]
+"User Entry" -> "User Name" [label=key headlabel="!" labeldistance=1.2]
+"User Info" -> "Client Connection" [label=connection headlabel="!" taillabel="?" labeldistance=1.2]
+
+Server -> "Chat Room Map" [label=rooms headlabel="!" taillabel="?" labeldistance=1.2]
+"Chat Room Map" -> "Chat Room Entry" [label=entries taillabel="?" labeldistance=1.2]
+"Chat Room Entry" -> "Participants List"  [label=val headlabel="!" taillabel="?" labeldistance=1.2]
+"Participants List" -> "User Name" [label=entries headlabel="+" taillabel="!" labeldistance=1.2]
+"Chat Room Entry" -> "Chat Room Name" [label=key headlabel="!" labeldistance=1.2]
+
+Server -> "Message-Receiving Thread" [label=thread headlabel="*" taillabel="!" labeldistance=1.2]
+"Message-Receiving Thread" -> "User Info" [label="for user" headlabel="!" taillabel="!"]
+Server -> "Message Queue" [label=queue headlabel="?" taillabel="!" labeldistance=1.4]
+Server -> "Message Delivery Thread" [label=thread headlabel="!" taillabel="!" labeldistance=1.4]
+
+"User Info" -> "User Name" [label=name headlabel="!" taillabel="?" labeldistance=1.4]
+
+Server -> "Connection-Receiving Thread" [label=thread headlabel="!" taillabel="?"]
+}

@@ -1,0 +1,503 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang=en lang=en>
+<head>
+	<meta http-equiv=content-type content="text/html; charset=utf-8" />
+	<link rel=stylesheet href="main.css" type="text/css" />
+<title>Project 3: Instant Messaging</title>
+</head>
+<body>
+
+<img style="float:right; margin-left: 10px" src="img/Ymessenger7.png" width="150">
+
+<h1 style="text-align:center">6.005 Elements of Software Construction<br/>
+Spring 2009<br/>
+Project 3: Instant Messaging<br/>
+Out: Wednesday, April 22<br/>
+Due: 5:00 PM, May 5, 2009 and 11:59:59 PM, May 12, 2009
+</h1>
+
+<!-- <h3> -->
+<!-- Due Dates: <br /> -->
+<!-- </h3> -->
+<!-- in class, Wednesday, November 19 (team building lab) -->
+<!-- <br/> -->
+<!-- in class, Friday, November 21 (networking lab) -->
+<!-- <br/> -->
+<!-- midnight, Tuesday, November 25 -->
+<!-- <br/> -->
+<!-- 11 am, Wednesday, December 3 -->
+<!-- <br/> -->
+<!-- in class, Monday, December 8 (for prize consideration) -->
+<!-- <br/> -->
+<!-- midnight, Tuesday, December 9 -->
+<!-- <br/> -->
+
+<ul>
+<li> <a href="#problem">Problem</a></li>
+<li> <a href="#purpose">Purpose</a></li>
+<li> <a href="#specification">Specification</a></li>
+<li> <a href="#tasks">Tasks</a></li>
+<!-- <br> <a href="#analysis">Analysis</a>  -->
+<li> <a href="#infrastructure">Infrastructure</a></li>
+<li> <a href="#deliverables">Deliverables and Grading</a></li>
+<li> <a href="#hints">Hints</a></li>
+<li> <a href="#resources">Resources</a></li>
+</ul>
+
+<a name="problem"><h2>Problem</h2></a>
+
+<p>Instant messaging (<a
+href="http://en.wikipedia.org/wiki/Instant_messaging">IM</a>) is a staple of the web and has been around
+almost since its inception, starting with simple text-based programs
+like <a href="http://en.wikipedia.org/wiki/Talk_(Unix)">talk</a> and
+<a href="http://en.wikipedia.org/wiki/IRC">IRC</a> and progressing to
+today's GUI-based IM clients from Yahoo, Microsoft, AOL, etc.
+In this project you will design and implement an IM system, including 
+both the client and the server.
+
+The following characteristics constrain the design space of an IM
+system:
+
+<ul>
+
+<li><b>Real-time communication.</b> An IM conversation happens in real
+time: one person types some text, presses "enter," and the other
+person (almost) immediately sees the text.
+
+<li><b>Number of parties.</b> An IM conversation can happen between
+two or more people. Some systems only allow two people to communicate;
+others allow more than two people.  Most systems allow a person to be
+involved in multiple conversations at the same time.
+
+<li><b>Based on typed text.</b> The main mode of communication is via
+text, as opposed to voice or video.
+
+<li><b>Connected over a network.</b> The parties involved in the
+communication may be in physically remote locations, and are connected
+over the internet.
+
+</ul>
+
+<p>Your task will be to design an instant messaging system 
+with the above properties, as well as additional properties
+that you will incorporate into your design. This system will include a server
+component that handles the transfer of messages and other data, and a client
+component with a graphical user interface.</p>
+
+<a name="purpose"><h2>Purpose</h2></a>
+
+<p>The purpose of this project is twofold. First, you will learn
+several Java technologies, including networking (to support
+connectivity over a network), sockets and I/O (to support real-time,
+text-based communication), and threads (to support two or more people
+communicating concurrently). State machines may be useful to specify
+certain aspects of the system's behavior.</p>
+
+<p>Second, this project will introduce you to graphical user
+interfaces. You will:</p>
+
+<ul>
+<li>become familiar with Swing, a graphical user interface (GUI) toolkit for
+Java, that is similar to many other such toolkits;</li>
+<li>learn important GUI programming concepts, including the notion of a
+<i>view hierarchy</i> and the <i>model-view-controller</i> design pattern;</li>
+<li>use event-based programming and the publish-subscribe pattern
+(i.e. Observer or Listener design pattern);</li>
+<li>use object modeling notation to explore and express these structures;</li>
+<li>and confront user interface design challenges.</li>
+</ul>
+
+<p>Throughout the project, you will need to design and implement mutable
+datatypes, paying particular attention to their specifications and how they
+interact with one another.</p>
+
+<a name="specification"><h2>Specification</h2></a>
+
+<img src="img/clientserver.png" style="float:right; margin-left:2em; margin-bottom:1em"/>
+
+<p>Implement an IM system in Java with the following properties:</p>
+
+<ul>
+
+<li> <p><b>Client.</b> The client is a program that opens a
+network connection with the IM server at a specified IP address
+and port number. Once the connection is open, the client program
+presents a graphical user interface for performing the interactions
+listed below.
+</p>
+
+<li> <p> <b>Server.</b> The server is a program that accepts connections
+from clients. A server should be able to maintain an unlimited number
+of open client connections, and clients should be able to connect and
+disconnect as they please.</p>
+
+<p>The server is responsible for managing the state of both clients
+and <i>conversations.</i></p>
+  
+<li> <p> <b>Conversations.</b> A conversation is an interactive
+text-exchange session between some number of clients, and is the
+ultimate purpose of the IM system. The exact nature of a conversation
+is not specified (although the <a href="#hints">hints section</a> details a
+couple possibilities), except to say that it allows clients to send
+text messages to each other. Messaging in a conversation should be 
+instantaneous, in the sense that incoming messages should be displayed immediately, 
+not held until the recipient requests them.</p>
+
+<li> <p> <b>Client/server interaction.</b> A client and server interact by
+exchanging messages in a protocol of your devising &mdash; the protocol
+is not specified. Using this protocol, the user interface presented by the
+client should:</p>
+
+<ul>
+<li>Provide a facility for seeing which users are currently logged in;</li>
+<li>Provide a facility for creating, joining and leaving conversations;</li>
+<li>Allow the user to participate in multiple conversations simultaneously;</li>
+<li>Visually separate messages of different conversations (e.g., into distinct windows, tabs, panes, etc.);</li>
+<li>Provide a history of all the messages within a conversation for as long as the client is in that conversation;</li>
+<!--<li>Distinguish between input and output, so that incoming messages do not appear interleaved with messages
+still being composed.</li>-->
+</ul>
+
+<li> <p> <b>No authentication.</b> In a production system, logging in as a
+client would require some form of
+password authentication. For simplicity, this IM system will not use
+authentication, meaning that anyone can log in as a client and
+claim any username they choose.</p>
+
+</ul>
+
+<a name="tasks"><h2>Tasks</h2></a>
+
+<ol>
+
+<li><p><b>Team preparation.</b> Meet with your team and complete the <a href="lab-team-building/lab.html">lab
+on team building</a>.</p>
+
+<li><p><b>Individual preparation.</b> Complete the
+<a href="lab-networking/lab.html">lab on networking</a>
+by checking out <tt>friendly</tt> from your personal SVN repository.
+You may also complete the <a href="lab-swing/lab.html">optional Swing lab</a>
+by checking out <tt>guiwords</tt> from your personal SVN repository (or you may do this
+lab with your group). These labs are independent of each other.
+</p></li>
+
+<li><p><b>Abstract design.</b> Define a precise notion of
+<i>conversation</i> in your IM system. See the <a
+href="#hints">hints</a> on how to do this.
+Construct an object model that captures the essential concepts of 
+instant messaging from a problem perspective, and their relationships to one another.
+Explain the important modeling decisions you made. Describe alternatives to particular
+decisions and justify your choice.</p></li>
+
+<li><p><b>Client/server protocol.</b> Design a set of commands the clients and server
+will use to communicate, allowing clients to perform the actions stipulated by the
+specification. Create a specification of the client/server protocol as a grammar or
+state machine. Describe possible protocol messages, the state of the server, and the
+state of the client (if it stores any).</p></li>
+
+<li><p><b>Usability design.</b> Sketch your user interface and its various screens and dialogs.
+Use these sketches to explore alternatives quickly and to plan the structure and flow
+of your interface. <i>Sketching on paper</i> is recommended. Turn in the sketches you
+decided to go with, along with commentary as needed to explain non-obvious parts.
+Briefly point out the merits of your design.</p></li>
+
+<li><p><b>Code design.</b> Design your program with a module dependency diagram that includes all
+model, view, and controller classes. Explain important design decisions, and justify your choices
+with reference to specific alternatives for particular decisions.
+Your design should minimize the risk of concurrency bugs
+(like race conditions and deadlocks) and should support easy
+unit testing of your modules.</p></li>
+
+<li><p><b>Testing strategy.</b> Devise a strategy for testing your IM system. Describe what automated tests
+you will use, and what manual tests you will perform.
+Since UI front-end testing is often most easily done by hand,
+documentation of your strategy is especially important. As you think about how to test your program,
+you are likely to find that you want to revisit your code design (for example, to make a cleaner
+API to permit unit testing independently of the GUI).</p></li>
+
+<li><p><b>Implementation.</b> As always, your code should be clear, well-organized, and usefully documented.
+See the <a href="#hints">hints</a> for further suggestions.</p></li>
+
+<li><p><b>Testing.</b> Execute your testing strategy, using JUnit and
+by performing manual tests of the GUI. In your report, document the results of your manual tests.
+</p></li>
+
+<!--
+<li><p><b>Analysis.</b> Write a brief analysis of your user interface as outlined
+in the <a href="#analysis">next section</a>.</p></li>
+-->
+
+<li><p><b>Reflection.</b> Write a brief commentary describing what you learned from this experience:</p>
+<ul>
+<li>What was easy?</li>
+<li>What was hard?</li>
+<li>What was unexpected?</li>
+<li>What would you do differently in designing the chat system if you were to do
+it again?</li></ul></li>
+
+</ol>
+
+<!--
+<a name="analysis"><h2>Analysis</h2></a>
+
+<p>Usability is topic worthy of (at least) a semester's study on its own. Designing and analyzing one GUI will
+not make anyone a usability expert, but software engineers frequently work on projects where the user
+interface is an important component of an overall system, and where members of the development team will
+be devoted to designing a usable interface. Your goal for this project is to become familiar with the language
+and basic principles of usability through a design critique.</p>
+
+<p>Your critique should be based on the following <b>four principles</b>:</p>
+
+<ul>
+<li><b>Learnability</b>. How easy is it for <i>new users</i> to learn how to use your interface?
+Is it simple, with as few commands and controls as possible?
+Is it consistent with other interfaces they have used before?  
+Are buttons, menus, and other controls labeled with simple, clear, familiar terms?
+
+<li><b>Efficiency</b>. How efficient is the interface for <i>frequent users</i> who have already learned it?
+Do frequent operations require many mouse clicks or keystrokes?
+Does the interface offer shortcuts for common operations?</li>
+
+<li><b>Visibility</b>. How visible is the state of the system?
+When the user issues a command, does the system give sufficient feedback, e.g. making the effect of that command 
+immediately visible?
+If there are commands that take a long time to run, does the system give feedback about progress?</li>
+
+<li><b>Errors</b>. What errors are possible, to what extent are errors prevented, and how can users recover from errors?
+Is it easy to perform destructive or irreversible actions unintentionally?
+Is it easy to undo mistakes?
+Does the interface have different modes (states where the same user action invokes different commands), which may lead
+to &quot;mode errors&quot; (trying to use the command in the wrong mode).
+Are such modes clearly visible?</li>
+</ul>
+
+<p>You should structure your critique around at least <b>two <i>user scenarios</i></b>. A
+scenario describes a user's <i>task</i>, and the steps they take to complete that task. Note that
+users do not have tasks like &quot;click the 'Open' button&quot; &mdash; this is a step toward
+completing a task that might be &quot;post today's lecture notes to the course web
+site.&quot;</p>
+
+<p>For each scenario you describe, discuss how your user interfaces fares with respect to the
+given principles. For example: <blockquote>The fact that the file starts uploading right away after
+the user selects it improves <i>efficiency</i> because there is no confirmation step. However, it
+introduces a problem where the user may choose the wrong file, and the file is now shared for
+everyone to see. The interface allows the user to <i>recover from this error</i> by providing a
+&quot;cancel&quot; button until the next file is chosen, even after the upload has
+completed.</blockquote> </p>
+
+<p>Write at least one scenario from the perspective of a <i>new</i> user, and one from the
+perspective of a <i>frequent</i> user. Include annotated screenshots or cropped images of parts
+of your UI to emphasize or clarify where needed. Your critique should be no longer than a few
+pages, including screenshots.</p>
+-->
+
+<a name="infrastructure"><h2>Infrastructure</h2></a>
+
+<p>Use the <a href="lab-networking/lab.html">networking lab</a> to learn about network I/O in Java,
+and the <a href="lab-swing/lab.html">Swing lab</a> for details on GUI programming.</p>
+
+<p>No initial code is provided for this project. However, two <i>runner</i> classes are provided with
+<tt>main</tt> methods you should fill in:</p>
+<ul>
+<li>Running <tt>main.Client.main(String[])</tt> must start an instance of your GUI chat client.</li>
+<li>Running <tt>main.Server.main(String[])</tt> must start an instance of your chat server.</li>
+</ul>
+
+<p>You should consider using packages other than <tt>main</tt> to organize your code.</p>
+
+<a name="deliverables"><h2>Deliverables and Grading</h2></a>
+
+<p>There are <i>three</i> deadlines for this project.</p>
+
+<p>For <u>the first deadline</u> (<b>5:00 PM, May 5, 2009</b>), your deliverables are:</p>
+<ul>
+<li>the team contract;</li>
+<li>the abstract designs and discussion;</li>
+<li>the client/server protocol;</li>
+<li>and the usability design.</li>
+</ul>
+
+<p>This design deliverable should be submitted by
+committing <b>one</b> PDF to the <tt>deliverables</tt> folder of your
+project repository. For your user interface sketches, you should
+either scan the files and place them in your PDF
+(see <a href="#resources">resources</a> for a list of scanners on
+campus), <i>or</i> you may use some drawing tool or even implement a
+Swing prototype (just GUI with no functionality) to present a few
+snapshots of your interface design.</p>
+
+<p>You will meet with your TA on the next day (11:00 AM, Wednesday,
+May 6, 2009) during the work period to discuss these topics.</p>
+
+<p>For <u>the second deadline</u> (<b>11:00 AM, May 8, 2009</b>), you will meet with your TA, and your deliverables are:</p>
+<ul>
+<li>the code designs and discussion;</li>
+<li>the testing strategy;</li>
+<li>and a demo of <i>some</i> working portion of the project that demonstrates significant effort towards
+understanding a critical or high-risk area of the design.</li>
+</ul>
+
+<p>The code designs and testing strategy must be submitted by 11am on
+May 8 as <b>one</b> PDF in the <tt>deliverables</tt> folder of your
+repository.  Bring a printout with you to the meeting with your TA.
+The demo will take place at the meeting.</p>
+
+<p>Your demo might show, for example, a basic server that sends and
+receives messages but without a GUI client (see the
+the <a href="#hints">hints</a> about <tt>telnet</tt>). Or you might
+have a working basic GUI with no server backend but a simple API for
+connecting to one. Talk to your TA beforehand if you are unsure about
+what is sufficient.</p>
+
+<p>The meeting will also include discussion of the design deliverables from the first two deadlines.</p>
+
+<p>For <u>the third and final</u> deadline (<b>midnight, May 12, 2009</b>), your deliverables are:</p>
+<ul>
+<li>the implementation;</li>
+<li>the tests;</li>
+<li>the testing report;</li>
+<li>and your reflections on the project.</li>
+</ul>
+
+<p>The report and reflections should be committed as <b>one</b> PDF in
+the <tt>deliverables</tt> folder.</p>
+
+<p>The grading breakdown is as follows:</p>
+<ul>
+<li>30% for the abstract design, protocol, and usability design</li>
+<li>25% for the code design, initial demo, and testing strategy</li>
+<li>35% for implementation and testing</li>
+<li>10% for reflection</li>
+</ul>
+
+<a name="awards"><h2>Awards</h2></a>
+
+<p>The course staff will judge and award prizes to teams whose instant messaging systems
+embody exemplary design and implementation.</p>
+
+<p>You may <b>submit your project for prize consideration on Monday
+May 11 during lecture time, 11am-12:30pm, in 32-G825</b>.  Your team
+will give a 5-minute presentation to the course staff in which you
+demonstrate your system and describe its design. You must commit your
+work (up to that point) to Subversion by 11 am on May 11. You
+are <b>not</b> required to give this presentation (but then you won't
+win anything, either). And everyone can continue to work on the
+project until the final deadline, but only the work demonstrated in
+this presentation will be considered for prizes.</p>
+
+<p>Serious award contenders should consider going above and beyond the
+required specification to implement their own extensions.</p>
+
+<p>You might add standard instant messaging features like away
+messages, auto-replies, offline messaging, password-protected
+accounts, user icons, graphical emotions... or you might integrate
+voice chat, a shared whiteboard, encrypted conversations with perfect
+forward secrecy, or something as yet unheard of!</p>
+
+<a name="hints"><h2>Hints</h2></a>
+
+<b>Defining a conversation.</b> Part of your job is to determine what
+a conversation means. For example, does a conversation have a name,
+and can other users join the conversation by specifying the name? Is
+it like a chat room, that people can enter and exit? In that case, can
+a conversation be empty (a chat room can), waiting for users?
+
+<p>Or is a conversation more like a phone call, where a person "dials"
+another person? In that case, can the receiving party deny the
+conversation?
+
+<p> However you define a conversation, remember to <i>keep it simple
+for your first iteration.</i> You can always extend your program with
+interesting ideas if you have time left.
+
+<p><b>Designing a protocol.</b> You must also devise a client/server protocol
+for this project. You should strongly consider using a text-based protocol, which
+may be easier for testing and debugging.
+
+<p>Services that use plain text protocols &mdash; e.g. <a href="http://en.wikipedia.org/wiki/HTTP">HTTP</a>
+or <a href="http://en.wikipedia.org/wiki/SMTP">SMTP</a> &mdash; can talk
+to a human just as well as another machine by using a client program that sends
+and receives characters. Such a client program
+already exists on almost all operating systems, called <tt>telnet</tt>.  
+You can run <tt>telnet</tt> by opening a command prompt
+and typing <tt>telnet <i>hostname</i> <i>port</i></tt>.  The 
+<a href="lab-networking/lab.html">lab</a> gives you some experience with
+using telnet.
+
+<p>
+<b>Handling multiple clients.</b>  Since instant messaging is useless without
+at least two people, your server must be able to handle multiple clients
+connected at the same time.  The Friendly server you'll develop in the 
+<a href="lab-networking/lab.html">lab</a> gives you some starting code, but note that 
+Friendly doesn't need its clients to interact or share any state.  Your server 
+will certainly need to do that.  One reasonable design approach follows the
+Friendly model (using one thread for reading input from each client) but adds
+a central state machine representing the state of the server (using one more
+thread, to which each of the client threads pass messages through a shared
+queue).
+
+<p>Read the socket documentation referenced in the lab to understand how network
+sockets operate in Java. Consider how, for example,
+the server will write to clients while at the same time awaiting messages from them.</p>
+
+<p><b>Design for safe concurrency.</b> In general, making an argument
+that an implementation is free of concurrency bugs (like race
+conditions and deadlocks) is very difficult and error-prone.  The best
+strategy therefore is to design your program to allow a very simple
+argument, by limiting your use of concurrency and especially avoiding
+shared state wherever possible.  For example, one approach is to use
+concurrency only for reading sockets, and to make the rest of the
+design single-threaded.
+
+<p>And note that, even though user interfaces are concurrent by
+nature,<b>Swing is not thread safe</b>. Understand what code will run
+in the main thread, threads you explicitly spin, or the Swing event
+dispatching thread. Recommended reading:
+<a href="http://java.sun.com/products/jfc/tsc/articles/threads/threads1.html">Threads
+and Swing</a>.</p>
+
+<p><b>Design for testability.</b> To make it possible to write unit
+tests without having to open socket connections and parse streams of
+responses, you should design your state machine(s) in such a way that
+they can be driven directly by a unit test -- either by calling
+methods, or by putting messages into a queue read by the state
+machine's thread.
+
+<p>Testing GUIs is particularly challenging.  Follow good design
+practice and separate as much functionality as possible into modules
+you can test using automated mechanisms. You should maximize the
+amount of your system you can test with complete independence from any
+GUI.</p>
+
+<p>Another useful testing technique is the idea of a <i>stub</i>
+(<a href="http://en.wikipedia.org/wiki/Method_stub">method stubs</a>,
+<a href="http://en.wikipedia.org/wiki/Mock_object">mock
+objects</a>). To test one component of your system in isolation, you
+can create trivial implementations of the other components with which
+it is coupled. This might allow you to test your server without
+opening network connections, or to test your client backend with
+automated rather than GUI tests.</p>
+
+<p><b>Implementation.</b> Develop in iterations.  Focus on important
+modules first, and defer making cosmetic improvements to your user
+interface until after all the code is well-organized and thoroughly
+tested.  Make use of assertions.</p>
+
+<a name="resources"><h2>Resources</h2></a>
+
+<p>Available <b>scanners</b>:</p>
+<ul>
+<li>New Media Center at 26-139, an Athena cluster with dozens of
+Macs and 1 flatbed scanner. Log in to the attached Mac and use
+Applications -> ImageCapture to scan.</li>
+<li>SIPB at W20-557 (outside the W20 Athena cluster) has two flatbed
+scanners available for general use.</li>
+<li>Stata Center scanner on second floor, available to CSAIL members.</li>
+<li>Simmons Hall Athena Cluster has one flatbed scanner. Requires
+your own computer and, of course, permission to enter the dorm.</li>
+<li>Sidney-Pacific Dorm Athena Cluster has a Epson Perfection 1250
+scanner. It is free for everyone to use and is connected to a Dell
+workstation.</li>
+</ul>
+</body>
+</html>

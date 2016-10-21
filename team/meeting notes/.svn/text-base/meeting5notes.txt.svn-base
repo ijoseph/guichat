@@ -1,0 +1,62 @@
+Meeting 5: Start 9:22 PM, ZBT May 6th
+
+Agenda: continue code design, testing strategy
+
+Code design:
+---
+Drawing Object Model diagrams
+
+
+Communication Package:
+Contains Packets, Channels and ConnectionHandlers.  Channel and ChannelHandler are interfaces, which are impelemented by RealChannel, RealConnection, and TestChannel, TestConnection.
+
+Packets contain all of the information associated with a given transmission, from either the client to the server or vice versa.  Packets contain a number of fields, mostly strings, which give different pieces of information about this transmission.
+
+ServerHandler needs to use a ConnectionHandler, Channels, a QueueHandler, and UserHandler threads.  The UserHandler threads all contain a reference to a QueueHandler, and the QueueHandler will contain a map of usernames to UserHandler objects.
+
+
+
+
+Client Design:
+First, have a Client Controller.  This will depend on different conversation classes, either 2 way or chatroom conversation, both of which will inherit from a common class.
+
+Each window will have a reference to a corresponding conversation.
+
+Client controller has a bunch of conversations, in a map from names to conversations, and separate map from names to chat rooms.  So, a chat room map and a 2way map.  When get message, checks type, looks in appropriate type.  
+
+Other option: map of conversation objects, from <type, name> to a conversation.  
+
+Deciding to have 2 separate maps, for different types of conversations.  Then Client controller will just depend on conversation.  Incoming messages will be sorted into the appropriate map by the flag on the packet.
+
+Client controller will depend on Channel, as well as Packet.
+
+Two types of conversations will have static methods to generate packets of appropriate type, for their conversation.  Thus, conversations will depend on Packet.
+
+Isaac will look into shell scripts/.bat files/to run the program as a shortcut from the desktop.
+
+GUI Desgin:
+Windows will have buttons, screens, etc, with listeners.  These listeners will know about the Client Controller, to initiate changes and events, and about conversations, to get the information on different conversations.
+
+Class for main window, 2-way window, and chat window.
+Main window displays a list of users, and has IM, and join chat room buttons.
+ClientModel: will contain information about all of the current conversations.  When conversations are update by this, 
+
+IMWindow: will be subclassed by 2-way and chatroom.
+
+Finally, have XMLParser, which only channel knows about.
+
+----
+Testing design
+For GUI, need to check all of the appropriate buttons, to make sure the right methods are called when these are clicked on.  Need to make sure everything is updated appropriately in the GUI when different actions occur, like receiving a message.
+
+Unit tests need to test basic cases, such as sending messages between users, getting acks back, sending messages to a chatroom, etc.
+
+----
+
+Meeting Adjourned: 11:10 pm.
+
+Next Meeting: Further Implementation, Testing.
+
+
+
+

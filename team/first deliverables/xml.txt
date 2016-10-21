@@ -1,0 +1,94 @@
+<Request type="login">
+	<name>Group03</name>
+</Request>
+
+<Ack for="Request" type="login">
+	<status>OK</status>
+</Ack>
+
+<Ack for="Request" type="login">
+	<status>TAKEN</status>
+</Ack>
+
+<Request type="logout"/>
+
+<Message type="2way">
+	<dest>Group04</dest>
+	<contents>This is a message.</contents>
+</Message>
+
+<Message type="room">
+	<dest>chatroom2008</dest>
+	<contents>This is a message.</contents>
+</Message>
+
+<Message type="starttyping">
+	<dest>Group04</dest>
+</Message>
+
+<Message type="pausetyping">
+	<dest>Group04</dest>
+</Message>
+
+<Message type="endtyping">
+	<dest>Group04</dest>
+</Message>
+
+<Ack for="Message" type="room">
+	<status>OK</status>
+	<dest>Group04</dest>
+</Ack>
+
+
+<Ack for="Message" type="2way">
+	<status>OK</status>
+	<dest>Group04</dest>
+</Ack>
+
+
+<Ack for="Message" type="2way">
+	<status>OFFLINE</status>
+	<dest>Group04</dest>
+</Ack>
+
+<Ack for="Message" type="2way">
+	<status>MALFORMATTED</status>
+	<dest>Group04</dest>
+</Ack>
+
+<Request type="joinroom">
+	<room>chatroom2008</room>
+</Request>
+
+<Ack for="Request" type="joinroom">
+	<status>OK</status>
+	<room>Group04</room>
+</Ack>
+
+<Ack for="Request" type="joinroom">
+	<status>CREATEFAILED</status>
+	<room>Group04</room>
+</Ack>
+
+<Request type="leaveroom">
+	<room>chatroom2008</room>
+</Request>
+
+<Notification type="joinedroom">
+	<source>person1</source>
+	<source>person2</source>
+	<room>chatroom2008</room>
+</Notification>
+
+<Notification type="leftroom">
+	<source>person1</source>
+	<room>chatroom2008</room>
+</Notification>
+
+<Notification type="login">
+	<source>person1</source>
+</Notification>
+
+<Notification type="logout">
+	<source>person1</source>
+</Notification>

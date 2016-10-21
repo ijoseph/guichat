@@ -1,0 +1,3 @@
+-----CHANGELOG------
+
+- Conversation now depends on both TwoWayConversation and ChatConversation

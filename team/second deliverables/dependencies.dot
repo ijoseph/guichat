@@ -1,0 +1,79 @@
+digraph {
+
+node[shape=box]
+
+subgraph cluster_comm {
+	label=comm;
+	color=blue;
+	ConnectionHandler -> Channel
+	TestChannel -> Channel
+	TestConnectionHandler -> TestChannel
+	TestConnectionHandler -> ConnectionHandler
+
+	RealChannel -> Channel
+	RealConnectionHandler -> ConnectionHandler
+	RealConnectionHandler -> RealChannel
+
+	Channel -> Packet
+	Channel -> XMLParser
+	RealChannel -> Packet
+	TestChannel -> Packet
+}
+
+subgraph cluster_server {
+	label=server;
+	color=blue;
+	ServerHandler -> ConnectionHandler
+	ServerHandler -> Channel
+	ServerHandler -> UserHandler
+	ServerHandler -> QueueHandler
+	UserHandler -> QueueHandler
+	QueueHandler -> UserHandler
+
+	UserHandler -> Packet
+	QueueHandler -> Packet
+}
+
+subgraph cluster_client {
+	label=client;
+	color=blue;
+	TwoWayConversation -> Conversation
+	ChatRoomConversation -> Conversation
+	ClientController -> Conversation
+	ClientController -> Channel
+
+	ClientController -> Packet
+	Conversation -> Packet
+	TwoWayConversation -> Packet
+	ChatRoomConversation -> Packet
+	TwoWayConversation
+
+	ClientController -> ClientModel
+	ClientModel -> TwoWayConversation
+	ClientModel -> ChatRoomConversation	
+
+	MainWindow -> ClientModel
+	IMWindow -> ClientModel
+	TwoWayWindow -> TwoWayConversation
+	ChatRoomWindow -> ChatRoomConversation
+	TwoWayWindow -> IMWindow
+	ChatRoomWindow -> IMWindow
+
+	IMWindow -> Packet
+
+	subgraph cluster_gui {
+		label=gui;
+		color=blue;
+		MainWindow
+		ChatRoomWindow
+		TwoWayWindow
+		IMWindow
+	}
+
+	ClientModel -> IMWindow
+	ClientModel -> MainWindow
+}
+
+}
+
+}

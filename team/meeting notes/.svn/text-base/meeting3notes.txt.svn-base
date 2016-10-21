@@ -1,0 +1,83 @@
+Note taker: Jesse Dunietz
+
+AGENDA
+* Decide on extension goals
+* Finish abstract design
+* Interface/usability design
+* Socket-free testing
+
+Long-term feature goals:
+-Chat rooms
+-Buddy lists
+-Phone texting (via email)
+-Sign-in/sign-out messages
+-Typing notifications
+-File-sending
+-"HELLO" protocol?
+-Invisibility?
+
+(Decided to add some extra features to object models)
+
+Chat room extension:
+-Maintain a separate list of current chat rooms
+-User can request to join a chat room; if it's not there yet it's created
+-User in a chat room can request to leave
+-User signing off automatically implies leaving
+-Chat room dies when last client
+-Add type field indicating what type of message this is - regular, chat, typing...
+-Each user in the chat room receives a notification when anyone joins or leaves the chat room
+
+
+Question: what if someone tries to send messages pretending to be someone else
+who's currently logged on, just by sending the right XML "from" field?
+
+Solution: grant the client an ID upon sign-on which the client must provide with
+each message
+
+We need message delivery acknowledgment messages to be sent from the server back
+to the client. The client will wait until this acknowledgment is received or times out.
+Different types of ack responses - success, user not online...
+
+
+Buddy list extension:
+-Forget BL between sessions
+-We must remember in the server who's interested in whose status updates. Ideally we should have some kind of database storing all this;
+ since we don't, and since we're not being so scalable anyway, we'll just put into every user's user info a list of other users
+ whose status updates this user is interested in. Each time there's a status update, we'll lock the user map and send update messages
+ to all users whose lists indicate interest.
+ (Alternative: send every status update to everybody.)
+ 	-We could spawn a new thread to send each status message to avoid time overhead of sending lots of status updates
+ 		-Loop through map looking for who has updated person on their buddy list, then grab a list of all of their sockets,
+ 		 and give up the map lock before actually spawning the thread to send all the update messages
+ 		 	-If someone logs out and their socket is destroyed before we send the update, that's fine
+		 	
+We shouldn't have to change too much infrastructure to support phone texting - we just need to allow the client-side to
+store phone info in the buddy list
+
+
+State diagrams: see Klein's notes.
+
+
+Client/Server Protocol:
+-See xml samples in xml.txt
+
+
+Usability:
+-Isaac has diagrams
+
+
+General coding assignments:
+-Isaac: GUI
+-Kling: Server
+-Jesse: Client
+
+
+Deliverable tasks (all materials to be added to Google Doc):
+-Kling: State diagrams, writeups on diagrams
+-Jesse: OM diagrams; write up this meeting's notes; protocols
+-Isaac: Yesterday's notes; GUI notes; compile final document
+
+
+Next meeting:
+-Agenda: second deliverable = code design, testing, start coding
+-Time: Tuesday, 8-9PM and then 10PM-?

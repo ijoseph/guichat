@@ -1,0 +1,63 @@
+Note taker: Isaac Joseph
+
+GOALS
+* the abstract designs and discussion `/
+* the client/server protocol `/
+
+Abstract model: 
+
+Conversation:
+	Each user dials another user. For starters, put in the username of the person you want to IM. 
+Decision: should the server have a socket per conversation or a socket per user?
+Advantages of sockets per conversation:
+* Don't have to worry about sorting received messages into windows 
+* If conversation is dead, then lots of sockets are left open
+ 
+Advantages of sockets per user: 
+
+* Don't have to worry about what happens when a conversation is closed. 
+* Easier with concurrency  
+ 
+ 
+Decision: socket per user; concurrency issues easier
+
+
+	Client maintains list of conversations. Server is just a switch that maps from socket to socket. 
+If client receives a message from a user it hasn't seen before based on an ID, then it opens a new 
+socket with a new conversation. 
+
+Object model: 
+
+Server:
+Client:
+
+Problem: How to deal with the same client receiving two messages at the same time, possible with 
+multi-threading? 
+
+Solution: Server has a thread for each sender.  When the server receives a message, the sender thread
+ gets the queue lock, puts the message on the queue, and then releases the queue lock. Now, the 
+ thread that receives the message signals the not-empty condition which wakes the thread waiting to deliver messages
+to the relevant port. The client then just reads the incoming message over the socket that it has 
+with the server and sort it to the correct window.
+
+Login protocol: Sender sends a signal to the server by opening a socket; the server opens a login 
+thread and server waits for a username to be sent from the sender. The sender then sends the username. 
+When the login thread receives the username, it gets a lock used to manipulate a <username, socket> 
+map. It then adds received username to the <username, socket> map.
+
+Logout protocol: Sender sends a signal to the server; the message handler thread related to that sender
+then gets the <username, socket> map lock and removes the related <username, socket> element. The
+message handler thread then kills itself. 
+
+Message protocol: Specified in XML
+
+ 
+ 
+---
+Next meeting: Usability design; think about what kind of messages we want to allow sending. 
+
+Isaac: Write up what we had so far
+Jesse: Thinking about concurrency issues
+Kling: State machines, thinking about code design
+
+Next meeting: Monday 9.30 BC
